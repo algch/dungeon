@@ -4,9 +4,6 @@ var cloud_class = load("res://enemies/cloud.tscn")
 onready var spawn_dir = directions.get_random_direction()
 var should_wander = true
 
-var spawn_count = 0
-var should_spawn = true
-
 const SPAWN_TIME = 100
 var spawntimer = SPAWN_TIME
 
@@ -27,9 +24,6 @@ func wander_loop():
 		movement_dir = directions.get_random_direction()
 		movementtimer = MOVEMENT_TIME
 
-		should_wander = randi() % 10 != 0
-
-
 func spawn_loop():
 	if spawntimer > 0:
 		spawntimer -= 1
@@ -37,19 +31,20 @@ func spawn_loop():
 		# SPAWN CLOUD AT 
 		spawn_dir = directions.get_random_direction() * 32
 		if not test_move(transform, spawn_dir):
-			print(spawn_dir)
 			var new_cloud = cloud_class.instance()
 			new_cloud.position = position + spawn_dir
 			get_node("../").add_child(new_cloud)
 			spawntimer = SPAWN_TIME
 
-			spawn_count += 1
-			should_spawn = spawn_count < 4
+			globals.cloud_count += 1
+			should_wander = true
 
 func _physics_process(delta):
 	damage_loop()
 	if should_wander:
 		wander_loop()
-	elif should_spawn:
+		if globals.cloud_count < 20:
+			should_wander = randi() % 20 != 0
+	else:
 		spawn_loop()
 	

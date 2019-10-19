@@ -22,6 +22,7 @@ config/icon="res://icon.png"
 [autoload]
 
 directions="*res://engine/directions.gd"
+globals="*res://engine/globals.gd"
 
 [display]
 
