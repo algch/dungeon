@@ -2,14 +2,22 @@ extends KinematicBody2D
 
 var TYPE = 'ENTITY'
 
+onready var projectile_class = preload('res://weapons/projectile.tscn')
+
 var SPEED = 0
 var movement_dir = Vector2(0, 0)
 
 var hitstun = 0
 var HITSTUN_TIME = 10
+
+var reload = 0
+var RELOAD_TIME = 50
+
 var knock_dir = Vector2(0, 0)
 
 var sprite_dir = 'down'
+
+var is_attacking = false
 
 var health = 1
 
@@ -24,24 +32,15 @@ func spriteDirLoop():
 		Vector2(0, 1):
 			sprite_dir = 'down'
 
-func animationLoop():
-	var state = 'walk'
-	if movement_dir == Vector2(0, 0):
-		$animation.stop()
-		$animation.set_frame(0)
-	else:
-		$animation.play(state + '_' + sprite_dir)
-
-func damage_loop():
+func damage_loop(damage_types):
 	if hitstun > 0:
 		hitstun -= 1
-	for body in $hitbox.get_overlapping_bodies():
-		if hitstun == 0 and body.get('DAMAGE') != null and body.get('TYPE') != TYPE:
+	for area in $hitbox.get_overlapping_areas():
+		var body = area.get_parent()
+		if hitstun == 0 and body.get('DAMAGE') != null and body.get('TYPE') in damage_types:
 			health -= body.get('DAMAGE')
 			hitstun = HITSTUN_TIME
 			knock_dir = transform.origin - body.transform.origin
-			print('HEALTH = ', health)
-
 
 func controls_loop():
 	var RIGHT = int(Input.is_action_pressed('ui_right'))
@@ -51,6 +50,19 @@ func controls_loop():
 
 	movement_dir.x = -LEFT + RIGHT
 	movement_dir.y = -UP + DOWN
+
+	is_attacking = Input.is_action_just_released('attack')
+
+func attackLoop():
+	if reload > 0:
+		reload -= 1
+	elif is_attacking and hitstun == 0:
+		var projectile = projectile_class.instance()
+		projectile.position = position
+		get_parent().add_child(projectile)
+		is_attacking = false
+		reload = RELOAD_TIME
+
 
 func movement_loop():
 	var motion

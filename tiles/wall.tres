@@ -6,7 +6,7 @@
 extents = Vector2( 32, 32 )
 
 [resource]
-0/name = "Sprite"
+0/name = "wall"
 0/texture = ExtResource( 1 )
 0/tex_offset = Vector2( 0, 0 )
 0/modulate = Color( 1, 1, 1, 1 )

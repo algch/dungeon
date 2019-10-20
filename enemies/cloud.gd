@@ -15,6 +15,12 @@ var DAMAGE = 1
 func _ready():
 	SPEED = 40
 	TYPE = 'ENEMY'
+	health = 3
+
+func healthLoop():
+	if health <= 0:
+		globals.cloud_count -= 1
+		queue_free()
 
 func wander_loop():
 	movement_loop()
@@ -40,10 +46,11 @@ func spawn_loop():
 			should_wander = true
 
 func _physics_process(delta):
-	damage_loop()
-	if should_wander:
+	damage_loop(['WEAPON'])
+	healthLoop()
+	if should_wander or hitstun > 0:
 		wander_loop()
-		if globals.cloud_count < 20:
+		if globals.cloud_count < 50:
 			should_wander = randi() % 20 != 0
 	else:
 		spawn_loop()

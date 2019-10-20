@@ -3,14 +3,32 @@ extends "res://engine/entity.gd"
 onready var on_wall_texture = preload("res://player/on_wall.png")
 onready var normal_texture = preload("res://player/player.png")
 
+func healthLoop():
+	if health <= 0:
+		queue_free()
+
+func animationLoop():
+	var state = 'walk'
+	if hitstun > 0:
+		$animation.play('damaged')
+	elif movement_dir == Vector2(0, 0):
+		$animation.play(state + '_' + sprite_dir)
+		$animation.stop()
+		$animation.set_frame(0)
+	else:
+		$animation.play(state + '_' + sprite_dir)
+
 func _ready():
 	SPEED = 200
 	TYPE = 'PLAYER'
+	$animation.stop()
+	health = 5
 
 func _physics_process(delta):
 	controls_loop()
 	movement_loop()
-	damage_loop()
+	damage_loop(['ENEMY'])
 	spriteDirLoop()
 	animationLoop()
-	print(sprite_dir)
+	attackLoop()
+	healthLoop()
