@@ -11,3 +11,6 @@ func _physics_process(delta):
 	controls_loop()
 	movement_loop()
 	damage_loop()
+	spriteDirLoop()
+	animationLoop()
+	print(sprite_dir)
