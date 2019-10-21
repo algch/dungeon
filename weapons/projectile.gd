@@ -1,7 +1,7 @@
 extends Node2D
 
 var TYPE = 'WEAPON'
-var SPEED = 1000
+var SPEED = 1500
 var DAMAGE = 1
 var move_dir = null
 

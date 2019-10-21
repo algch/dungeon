@@ -11,7 +11,7 @@ var hitstun = 0
 var HITSTUN_TIME = 10
 
 var reload = 0
-var RELOAD_TIME = 50
+var RELOAD_TIME = 25
 
 var knock_dir = Vector2(0, 0)
 

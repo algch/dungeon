@@ -13,7 +13,7 @@ var movementtimer = 0
 var DAMAGE = 1
 
 func _ready():
-	SPEED = 40
+	SPEED = 150
 	TYPE = 'ENEMY'
 	health = 3
 
@@ -50,7 +50,7 @@ func _physics_process(delta):
 	healthLoop()
 	if should_wander or hitstun > 0:
 		wander_loop()
-		if globals.cloud_count < 50:
+		if globals.cloud_count < 25:
 			should_wander = randi() % 20 != 0
 	else:
 		spawn_loop()
