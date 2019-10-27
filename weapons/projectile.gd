@@ -10,10 +10,11 @@ func _ready():
 	$animation.play('default')
 	move_dir = get_global_mouse_position() - position
 
-func collisionLoop():
-	for body in $hitbox.get_overlapping_bodies():
-		if body.get('TYPE') != 'PLAYER':
-			queue_free()
+func explode():
+	print('BOOM')
+	# TODO create and explosion node (collision shape linked to animation)
+	# and destroy everything inside the explosion area
+	queue_free()
 
 func movementLoop(delta):
 	if bounces == 0:
@@ -22,13 +23,12 @@ func movementLoop(delta):
 	var motion = move_dir.normalized() * SPEED
 	var collision = move_and_collide(motion)
 	if collision:
-		move_dir = move_dir.bounce(collision.normal)
-		bounces -= 1
-		if collision.collider.has_method('takeDamage'):
-			var knock_dir = collision.collider.transform.origin - transform.origin
-			collision.collider.takeDamage(DAMAGE, knock_dir)
-			queue_free()
+		if collision.collider.get('TYPE') == 'WEAPON':
+			explode()
+			collision.collider.queue_free()
+		else:
+			move_dir = move_dir.bounce(collision.normal)
+			bounces -= 1
 
 func _physics_process(delta):
 	movementLoop(delta)
-	# collisionLoop()

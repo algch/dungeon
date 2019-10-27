@@ -40,17 +40,13 @@ func movement_loop():
 		motion = knock_dir.normalized() * SPEED * 1.5
 	move_and_slide(motion)
 
-# func takeDamage(damage, knock):
-# 	if hitstun == 0:
-# 		health -= damage
-# 		hitstun = HITSTUN_TIME
-# 		knock_dir = knock
-
-func damage_loop(damage_types):
+func damage_loop(damage_types, self_destruct_types):
 	if hitstun > 0:
 		hitstun -= 1
 	for area in $hitbox.get_overlapping_areas():
 		var body = area.get_parent()
+		if hitstun == 0 and body.get('TYPE') in self_destruct_types:
+			queue_free()
 		if hitstun == 0 and body.get('DAMAGE') != null and body.get('TYPE') in damage_types:
 			health -= body.get('DAMAGE')
 			hitstun = HITSTUN_TIME
@@ -72,7 +68,7 @@ func attackLoop():
 		reload -= 1
 	elif is_attacking and hitstun == 0:
 		# create projectile outside of the player
-		var start_pos = (get_global_mouse_position() - position).normalized() * 45
+		var start_pos = (get_global_mouse_position() - position).normalized() * 50
 		var projectile = projectile_class.instance()
 		projectile.position = position + start_pos
 		get_parent().add_child(projectile)

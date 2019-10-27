@@ -31,7 +31,7 @@ func _ready():
 func _physics_process(delta):
 	controls_loop()
 	movement_loop()
-	damage_loop(['ENEMY', 'WEAPON'])
+	damage_loop(['ENEMY', 'WEAPON'], [])
 	spriteDirLoop()
 	animationLoop()
 	attackLoop()
