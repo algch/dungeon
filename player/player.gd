@@ -5,7 +5,7 @@ onready var normal_texture = preload("res://player/player.png")
 
 func healthLoop():
 	if health <= 0:
-		queue_free()
+		gameOver()
 
 func animationLoop():
 	var state = 'walk'
@@ -18,6 +18,9 @@ func animationLoop():
 	else:
 		$animation.play(state + '_' + sprite_dir)
 
+func gameOver():
+	get_tree().quit()
+
 func _ready():
 	randomize()
 	SPEED = 200
@@ -28,7 +31,7 @@ func _ready():
 func _physics_process(delta):
 	controls_loop()
 	movement_loop()
-	damage_loop(['ENEMY'])
+	damage_loop(['ENEMY', 'WEAPON'])
 	spriteDirLoop()
 	animationLoop()
 	attackLoop()

@@ -4,7 +4,7 @@ var TYPE = 'WEAPON'
 var SPEED = 10
 var DAMAGE = 1
 var move_dir = null
-var bounces = 3
+var bounces = 5
 
 func _ready():
 	$animation.play('default')

@@ -40,11 +40,11 @@ func movement_loop():
 		motion = knock_dir.normalized() * SPEED * 1.5
 	move_and_slide(motion)
 
-func takeDamage(damage, knock):
-	if hitstun == 0:
-		health -= damage
-		hitstun = HITSTUN_TIME
-		knock_dir = knock
+# func takeDamage(damage, knock):
+# 	if hitstun == 0:
+# 		health -= damage
+# 		hitstun = HITSTUN_TIME
+# 		knock_dir = knock
 
 func damage_loop(damage_types):
 	if hitstun > 0:
