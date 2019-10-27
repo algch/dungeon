@@ -32,6 +32,20 @@ func spriteDirLoop():
 		Vector2(0, 1):
 			sprite_dir = 'down'
 
+func movement_loop():
+	var motion
+	if hitstun == 0:
+		motion = movement_dir.normalized() * SPEED
+	else:
+		motion = knock_dir.normalized() * SPEED * 1.5
+	move_and_slide(motion)
+
+func takeDamage(damage, knock):
+	if hitstun == 0:
+		health -= damage
+		hitstun = HITSTUN_TIME
+		knock_dir = knock
+
 func damage_loop(damage_types):
 	if hitstun > 0:
 		hitstun -= 1
@@ -57,17 +71,10 @@ func attackLoop():
 	if reload > 0:
 		reload -= 1
 	elif is_attacking and hitstun == 0:
+		# create projectile outside of the player
+		var start_pos = (get_global_mouse_position() - position).normalized() * 45
 		var projectile = projectile_class.instance()
-		projectile.position = position
+		projectile.position = position + start_pos
 		get_parent().add_child(projectile)
 		is_attacking = false
 		reload = RELOAD_TIME
-
-
-func movement_loop():
-	var motion
-	if hitstun == 0:
-		motion = movement_dir.normalized() * SPEED
-	else:
-		motion = knock_dir.normalized() * SPEED * 1.5
-	move_and_slide(motion)

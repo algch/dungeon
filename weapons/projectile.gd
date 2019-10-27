@@ -1,9 +1,10 @@
-extends Node2D
+extends KinematicBody2D
 
 var TYPE = 'WEAPON'
-var SPEED = 1500
+var SPEED = 10
 var DAMAGE = 1
 var move_dir = null
+var bounces = 3
 
 func _ready():
 	$animation.play('default')
@@ -15,9 +16,19 @@ func collisionLoop():
 			queue_free()
 
 func movementLoop(delta):
-	var motion = move_dir.normalized() * SPEED * delta
-	position += motion
+	if bounces == 0:
+		queue_free()
+
+	var motion = move_dir.normalized() * SPEED
+	var collision = move_and_collide(motion)
+	if collision:
+		move_dir = move_dir.bounce(collision.normal)
+		bounces -= 1
+		if collision.collider.has_method('takeDamage'):
+			var knock_dir = collision.collider.transform.origin - transform.origin
+			collision.collider.takeDamage(DAMAGE, knock_dir)
+			queue_free()
 
 func _physics_process(delta):
 	movementLoop(delta)
-	collisionLoop()
+	# collisionLoop()

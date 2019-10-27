@@ -19,6 +19,7 @@ func animationLoop():
 		$animation.play(state + '_' + sprite_dir)
 
 func _ready():
+	randomize()
 	SPEED = 200
 	TYPE = 'PLAYER'
 	$animation.stop()
