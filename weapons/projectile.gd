@@ -1,5 +1,7 @@
 extends KinematicBody2D
 
+var explosion_class = preload('res://weapons/explosion.tscn')
+
 var TYPE = 'WEAPON'
 var SPEED = 10
 var DAMAGE = 1
@@ -11,9 +13,12 @@ func _ready():
 	move_dir = get_global_mouse_position() - position
 
 func explode():
-	print('BOOM')
-	# TODO create and explosion node (collision shape linked to animation)
-	# and destroy everything inside the explosion area
+	if is_queued_for_deletion():
+		return
+
+	var explosion = explosion_class.instance()
+	explosion.position = position
+	get_parent().add_child(explosion)
 	queue_free()
 
 func movementLoop(delta):
@@ -24,8 +29,8 @@ func movementLoop(delta):
 	var collision = move_and_collide(motion)
 	if collision:
 		if collision.collider.get('TYPE') == 'WEAPON':
-			explode()
 			collision.collider.queue_free()
+			explode()
 		else:
 			move_dir = move_dir.bounce(collision.normal)
 			bounces -= 1

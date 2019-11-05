@@ -1,3 +1,3 @@
 extends Node
 
-var cloud_count = 0
+var spider_count = 0

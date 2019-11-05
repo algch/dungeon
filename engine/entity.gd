@@ -4,6 +4,9 @@ var TYPE = 'ENTITY'
 
 onready var projectile_class = preload('res://weapons/projectile.tscn')
 
+# TESTING
+onready var explosion_class = preload('res://weapons/explosion.tscn')
+
 var SPEED = 0
 var movement_dir = Vector2(0, 0)
 
@@ -20,6 +23,12 @@ var sprite_dir = 'down'
 var is_attacking = false
 
 var health = 1
+
+func takeDamage(damage, body):
+	if hitstun == 0:
+		health -= damage
+		hitstun = HITSTUN_TIME
+		knock_dir = transform.origin - body.transform.origin
 
 func spriteDirLoop():
 	match movement_dir:
@@ -40,17 +49,20 @@ func movement_loop():
 		motion = knock_dir.normalized() * SPEED * 1.5
 	move_and_slide(motion)
 
+# TODO refactor this function, logic related to the classes that inherit this function 
+# should not be defined here but in the child class
 func damage_loop(damage_types, self_destruct_types):
 	if hitstun > 0:
 		hitstun -= 1
 	for area in $hitbox.get_overlapping_areas():
 		var body = area.get_parent()
-		if hitstun == 0 and body.get('TYPE') in self_destruct_types:
+		if body.get('TYPE') == 'EXPLOSION':
+			print('ALV exploté')
+		if body.get('TYPE') in self_destruct_types:
 			queue_free()
-		if hitstun == 0 and body.get('DAMAGE') != null and body.get('TYPE') in damage_types:
-			health -= body.get('DAMAGE')
-			hitstun = HITSTUN_TIME
-			knock_dir = transform.origin - body.transform.origin
+		if body.get('TYPE') in damage_types:
+			var damage = body.get('DAMAGE') or 0
+			takeDamage(body.get('DAMAGE'), body)
 
 func controls_loop():
 	var RIGHT = int(Input.is_action_pressed('ui_right'))
@@ -63,12 +75,19 @@ func controls_loop():
 
 	is_attacking = Input.is_action_just_released('attack')
 
+	# TESTING
+	if Input.is_action_just_released('test'):
+		var explosion = explosion_class.instance()
+		explosion.position = get_global_mouse_position()
+		get_parent().add_child(explosion, true)
+
+
 func attackLoop():
 	if reload > 0:
 		reload -= 1
 	elif is_attacking and hitstun == 0:
 		# create projectile outside of the player
-		var start_pos = (get_global_mouse_position() - position).normalized() * 50
+		var start_pos = (get_global_mouse_position() - position).normalized() * 54
 		var projectile = projectile_class.instance()
 		projectile.position = position + start_pos
 		get_parent().add_child(projectile)
