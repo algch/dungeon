@@ -31,7 +31,7 @@ func wander_loop():
 	if dist < 150:
 		chasePlayer()
 	else:
-		movement_loop()
+		movementLoop()
 	if movementtimer > 0:
 		movementtimer -= 1
 	if movementtimer == 0 or is_on_wall():
@@ -39,6 +39,6 @@ func wander_loop():
 		movementtimer = MOVEMENT_TIME
 
 func _physics_process(delta):
-	damage_loop(['WEAPON'], ['PLAYER'])
+	damageLoop(['WEAPON', 'PLAYER'])
 	healthLoop()
 	wander_loop()

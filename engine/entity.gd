@@ -41,7 +41,7 @@ func spriteDirLoop():
 		Vector2(0, 1):
 			sprite_dir = 'down'
 
-func movement_loop():
+func movementLoop():
 	var motion
 	if hitstun == 0:
 		motion = movement_dir.normalized() * SPEED
@@ -49,22 +49,16 @@ func movement_loop():
 		motion = knock_dir.normalized() * SPEED * 1.5
 	move_and_slide(motion)
 
-# TODO refactor this function, logic related to the classes that inherit this function 
-# should not be defined here but in the child class
-func damage_loop(damage_types, self_destruct_types):
+func damageLoop(damage_types):
 	if hitstun > 0:
 		hitstun -= 1
 	for area in $hitbox.get_overlapping_areas():
 		var body = area.get_parent()
-		if body.get('TYPE') == 'EXPLOSION':
-			print('ALV exploté')
-		if body.get('TYPE') in self_destruct_types:
-			queue_free()
 		if body.get('TYPE') in damage_types:
 			var damage = body.get('DAMAGE') or 0
 			takeDamage(body.get('DAMAGE'), body)
 
-func controls_loop():
+func controlsLoop():
 	var RIGHT = int(Input.is_action_pressed('ui_right'))
 	var LEFT = int(Input.is_action_pressed('ui_left'))
 	var DOWN = int(Input.is_action_pressed('ui_down'))

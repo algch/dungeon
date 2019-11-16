@@ -1,6 +1,6 @@
 extends Area2D
 
-var TYPE = 'EXPLOSION'
+var TYPE = 'WEAPON'
 var DAMAGE = 5
 
 func onExplosionFinished():

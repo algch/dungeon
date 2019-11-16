@@ -18,7 +18,7 @@ var DAMAGE = 1
 func _ready():
 	SPEED = 250
 	# TODO figure out naming for types
-	TYPE = 'ENEMY_INCUBATOR'
+	TYPE = 'ENEMY'
 	health = 5
 
 func healthLoop():
@@ -42,7 +42,7 @@ func wander_loop():
 	if dist < 200:
 		escapeFromPlayer()
 	else:
-		movement_loop()
+		movementLoop()
 	if movementtimer > 0:
 		movementtimer -= 1
 	if movementtimer == 0 or is_on_wall():
@@ -65,7 +65,7 @@ func spawn_loop():
 			should_wander = true
 
 func _physics_process(delta):
-	damage_loop(['WEAPON'], [])
+	damageLoop(['WEAPON', 'PLAYER'])
 	healthLoop()
 	if should_wander or hitstun > 0:
 		wander_loop()

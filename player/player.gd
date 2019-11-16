@@ -2,6 +2,7 @@ extends "res://engine/entity.gd"
 
 onready var on_wall_texture = preload("res://player/on_wall.png")
 onready var normal_texture = preload("res://player/player.png")
+var DAMAGE = 3
 
 func healthLoop():
 	if health <= 0:
@@ -29,9 +30,9 @@ func _ready():
 	health = 5
 
 func _physics_process(delta):
-	controls_loop()
-	movement_loop()
-	damage_loop(['ENEMY', 'WEAPON'], [])
+	controlsLoop()
+	movementLoop()
+	damageLoop(['ENEMY', 'WEAPON'])
 	spriteDirLoop()
 	animationLoop()
 	attackLoop()
