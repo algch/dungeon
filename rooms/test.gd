@@ -24,7 +24,7 @@ func makeRooms():
 		r.makeRoom(pos, Vector2(w, h) * tile_size)
 		$rooms.add_child(r)
 	# wait for movement to stop
-	yield(get_tree().create_timer(1.1), 'timeout')
+	yield(get_tree().create_timer(2), 'timeout')
 	var room_positions = []
 	# cull rooms
 	for room in $rooms.get_children():
@@ -94,3 +94,31 @@ func _input(event):
 			room.queue_free()
 		path = null
 		makeRooms()
+	if event.is_action_pressed('ui_focus_next'):
+		makeMap()
+
+func makeMap():
+	var Map = $tilemap
+	# create a tilemap from the generated rooms
+	Map.clear()
+	# fill tilemap with walls
+	var full_rect = Rect2()
+	for room in $rooms.get_children():
+		var r = Rect2(
+			room.position-room.size/2,
+			room.size
+		)
+		full_rect = full_rect.merge(r)
+	var topleft = Map.world_to_map(full_rect.position)
+	var bottomright = Map.world_to_map(full_rect.end)
+	for x in range(topleft.x, bottomright.x):
+		for y in range(topleft.y, bottomright.y):
+			Map.set_cell(x, y, 0)
+
+	for room in $rooms.get_children():
+		var s = (room.size / tile_size).floor()
+		var pos = Map.world_to_map(room.position)
+		var ul = (room.position / tile_size).floor() - (s / 2).floor()
+		for x in range(1, s.x - 1):
+			for y in range(1, s.y - 1):
+				Map.set_cell(ul.x + x, ul.y + y, 2)
