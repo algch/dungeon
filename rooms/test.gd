@@ -2,12 +2,12 @@ extends Node2D
 
 var room = preload('res://rooms/room.tscn')
 
-var tile_size = 32
-var num_rooms = 50
-var min_size = 4
-var max_size = 10
-var hspread = 400
-var cull = 0.5
+var TILE_SIZE = 32
+var NUM_ROOMS = 50
+var MIN_SIZE = 6
+var MAX_SIZE = 12
+var HSPREAD = 400
+var CULL = 0.5
 
 var path
 
@@ -16,19 +16,19 @@ func _ready():
 	makeRooms()
 
 func makeRooms():
-	for i in range(num_rooms):
-		var pos = Vector2(rand_range(-hspread, hspread), 0)
+	for i in range(NUM_ROOMS):
+		var pos = Vector2(rand_range(-HSPREAD, HSPREAD), 0)
 		var r = room.instance()
-		var w = min_size + randi() % (max_size - min_size)
-		var h = min_size + randi() % (max_size - min_size)
-		r.makeRoom(pos, Vector2(w, h) * tile_size)
+		var w = MIN_SIZE + randi() % (MAX_SIZE - MIN_SIZE)
+		var h = MIN_SIZE + randi() % (MAX_SIZE - MIN_SIZE)
+		r.makeRoom(pos, Vector2(w, h) * TILE_SIZE)
 		$rooms.add_child(r)
 	# wait for movement to stop
 	yield(get_tree().create_timer(2), 'timeout')
 	var room_positions = []
-	# cull rooms
+	# CULL rooms
 	for room in $rooms.get_children():
-		if randf() < cull:
+		if randf() < CULL:
 			room.queue_free()
 		else:
 			room.mode = RigidBody2D.MODE_STATIC
@@ -67,8 +67,6 @@ func findMST(nodes):
 		nodes.erase(min_p)
 
 	return path
-
-
 
 
 func _draw():
@@ -115,10 +113,45 @@ func makeMap():
 		for y in range(topleft.y, bottomright.y):
 			Map.set_cell(x, y, 0)
 
+	var corridors = []
 	for room in $rooms.get_children():
-		var s = (room.size / tile_size).floor()
+		var room_size_in_tiles = (room.size / TILE_SIZE).floor()
 		var pos = Map.world_to_map(room.position)
-		var ul = (room.position / tile_size).floor() - (s / 2).floor()
-		for x in range(1, s.x - 1):
-			for y in range(1, s.y - 1):
-				Map.set_cell(ul.x + x, ul.y + y, 2)
+		var room_top_left = (room.position / TILE_SIZE).floor() - (room_size_in_tiles / 2).floor()
+		for x in range(1, room_size_in_tiles.x - 1):
+			for y in range(1, room_size_in_tiles.y - 1):
+				Map.set_cell(room_top_left.x + x, room_top_left.y + y, 2)
+		
+		var room_point = path.get_closest_point(Vector3(room.position.x, room.position.y, 0))
+		for connection in path.get_point_connections(room_point):
+			if not connection in corridors:
+				var start = Map.world_to_map(
+					Vector2(
+						path.get_point_position(room_point).x,
+						path.get_point_position(room_point).y
+					)
+				)
+				var end = Map.world_to_map(
+					Vector2(
+						path.get_point_position(connection).x,
+						path.get_point_position(connection).y
+					)
+				)
+
+				carvePath(start, end)
+
+		corridors.append(room_point)
+
+# TODO, fix this
+func carvePath(start, end):
+	var Map = $tilemap
+	var global_x
+	for x in range(start.x, end.x):
+		Map.set_cell(x, start.y, 2)
+		Map.set_cell(x, start.y+1, 2)
+		global_x = x
+		print('local x ', x)
+	print('global_x = ', global_x)
+	for y in range(start.y, end.y):
+		Map.set_cell(global_x, y, 2)
+		Map.set_cell(global_x+1, y, 2)
