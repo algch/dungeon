@@ -1,6 +1,7 @@
 extends Node2D
 
-var room = preload('res://rooms/room.tscn')
+var player_class = preload('res://player/player.tscn')
+var room_class = preload('res://rooms/room.tscn')
 
 var TILE_SIZE = 32
 var NUM_ROOMS = 50
@@ -10,6 +11,7 @@ var HSPREAD = 400
 var CULL = 0.5
 
 var path
+var start_position
 
 func _ready():
 	randomize()
@@ -18,7 +20,7 @@ func _ready():
 func makeRooms():
 	for i in range(NUM_ROOMS):
 		var pos = Vector2(rand_range(-HSPREAD, HSPREAD), 0)
-		var r = room.instance()
+		var r = room_class.instance()
 		var w = MIN_SIZE + randi() % (MAX_SIZE - MIN_SIZE)
 		var h = MIN_SIZE + randi() % (MAX_SIZE - MIN_SIZE)
 		r.makeRoom(pos, Vector2(w, h) * TILE_SIZE)
@@ -68,20 +70,20 @@ func findMST(nodes):
 
 	return path
 
-
 func _draw():
-	for room in $rooms.get_children():
-		draw_rect(
-			Rect2(room.position - room.size/2, room.size),
-			Color(0, 1, 0),
-			false
-		)
-	if path:
-		for p in path.get_points():
-			for c in path.get_point_connections(p):
-				var pp = path.get_point_position(p)
-				var cp = path.get_point_position(c)
-				draw_line(Vector2(pp.x, pp.y), Vector2(cp.x, cp.y), Color(1, 0, 1), 2, true)
+	pass
+	# for room in $rooms.get_children():
+	# 	draw_rect(
+	# 		Rect2(room.position - room.size/2, room.size),
+	# 		Color(0, 1, 0),
+	# 		false
+	# 	)
+	# if path:
+	# 	for p in path.get_points():
+	# 		for c in path.get_point_connections(p):
+	# 			var pp = path.get_point_position(p)
+	# 			var cp = path.get_point_position(c)
+	# 			draw_line(Vector2(pp.x, pp.y), Vector2(cp.x, cp.y), Color(1, 0, 1), 2, true)
 
 func _process(delta):
 	update()
@@ -94,6 +96,11 @@ func _input(event):
 		makeRooms()
 	if event.is_action_pressed('ui_focus_next'):
 		makeMap()
+	if event.is_action_pressed('ui_cancel'):
+		var player = player_class.instance()
+		add_child(player)
+		# FIX THIS, SOMETHIG IS WRONG WITH PLAYER'S POSITION
+		player.position = start_position
 
 func makeMap():
 	var Map = $tilemap
@@ -111,7 +118,7 @@ func makeMap():
 	var bottomright = Map.world_to_map(full_rect.end)
 	for x in range(topleft.x, bottomright.x):
 		for y in range(topleft.y, bottomright.y):
-			Map.set_cell(x, y, 0)
+			Map.set_cell(x, y, 2)
 
 	var corridors = []
 	for room in $rooms.get_children():
@@ -120,7 +127,7 @@ func makeMap():
 		var room_top_left = (room.position / TILE_SIZE).floor() - (room_size_in_tiles / 2).floor()
 		for x in range(1, room_size_in_tiles.x - 1):
 			for y in range(1, room_size_in_tiles.y - 1):
-				Map.set_cell(room_top_left.x + x, room_top_left.y + y, 2)
+				Map.set_cell(room_top_left.x + x, room_top_left.y + y, 1)
 		
 		var room_point = path.get_closest_point(Vector3(room.position.x, room.position.y, 0))
 		for connection in path.get_point_connections(room_point):
@@ -142,6 +149,11 @@ func makeMap():
 
 		corridors.append(room_point)
 
+	start_position = getStartPosition()
+
+	for room in $rooms.get_children():
+		room.queue_free()
+
 func carvePath(start, end):
 	var Map = $tilemap
 	
@@ -149,9 +161,17 @@ func carvePath(start, end):
 	var y_step = 1 if start.y < end.y else -1
 
 	for x in range(start.x, end.x, x_step):
-		Map.set_cell(x, start.y, 2)
-		Map.set_cell(x, start.y + y_step, 2)
+		Map.set_cell(x, start.y, 1)
+		Map.set_cell(x, start.y + y_step, 1)
 
 	for y in range(start.y, end.y+1, y_step):
-		Map.set_cell(end.x, y, 2)
-		Map.set_cell(end.x + x_step, y, 2)
+		Map.set_cell(end.x, y, 1)
+		Map.set_cell(end.x + x_step, y, 1)
+
+func getStartPosition():
+	var left_most_room = null
+	for room in $rooms.get_children():
+		if left_most_room == null or room.position.x < left_most_room.position.x:
+			left_most_room = room
+	
+	return left_most_room.position
