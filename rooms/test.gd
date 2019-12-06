@@ -4,8 +4,8 @@ var room = preload('res://rooms/room.tscn')
 
 var TILE_SIZE = 32
 var NUM_ROOMS = 50
-var MIN_SIZE = 6
-var MAX_SIZE = 12
+var MIN_SIZE = 8
+var MAX_SIZE = 16
 var HSPREAD = 400
 var CULL = 0.5
 
@@ -142,16 +142,16 @@ func makeMap():
 
 		corridors.append(room_point)
 
-# TODO, fix this
 func carvePath(start, end):
 	var Map = $tilemap
-	var global_x
-	for x in range(start.x, end.x):
+	
+	var x_step = 1 if start.x < end.x else -1
+	var y_step = 1 if start.y < end.y else -1
+
+	for x in range(start.x, end.x, x_step):
 		Map.set_cell(x, start.y, 2)
-		Map.set_cell(x, start.y+1, 2)
-		global_x = x
-		print('local x ', x)
-	print('global_x = ', global_x)
-	for y in range(start.y, end.y):
-		Map.set_cell(global_x, y, 2)
-		Map.set_cell(global_x+1, y, 2)
+		Map.set_cell(x, start.y + y_step, 2)
+
+	for y in range(start.y, end.y+1, y_step):
+		Map.set_cell(end.x, y, 2)
+		Map.set_cell(end.x + x_step, y, 2)
