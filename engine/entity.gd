@@ -69,12 +69,6 @@ func controlsLoop():
 
 	is_attacking = Input.is_action_just_released('attack')
 
-	# TESTING
-	if Input.is_action_just_released('test'):
-		var explosion = explosion_class.instance()
-		explosion.position = get_global_mouse_position()
-		get_parent().add_child(explosion, true)
-
 
 func attackLoop():
 	if reload > 0:
