@@ -6,7 +6,7 @@ var room_class = preload('res://rooms/room.tscn')
 var TILE_SIZE = 32
 var NUM_ROOMS = 50
 var MIN_SIZE = 8
-var MAX_SIZE = 16
+var MAX_SIZE = 32
 var HSPREAD = 400
 var CULL = 0.5
 
@@ -126,14 +126,8 @@ func _input(event):
 		add_child(player)
 		# FIX THIS, SOMETHIG IS WRONG WITH PLAYER'S POSITION
 		player.position = start_position
-	if event.is_action_pressed('test'):
-		var player = player_class.instance()
-		add_child(player)
-		# FIX THIS, SOMETHIG IS WRONG WITH PLAYER'S POSITION
-		player.position = get_global_mouse_position()
-	if event.is_action_pressed('set_tile'):
-		var pos = $tilemap.world_to_map(get_global_mouse_position())
-		$tilemap.set_cell(pos.x, pos.y, 0)
+		var camera = player.get_node('camera')
+		camera.make_current()
 
 func makeMap(room_positions, room_sizes):
 	print('making map; rooms = ', $rooms.get_children())
