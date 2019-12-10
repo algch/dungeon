@@ -3,10 +3,10 @@ extends Node2D
 var player_class = preload('res://player/player.tscn')
 var room_class = preload('res://rooms/room.tscn')
 
-var TILE_SIZE = 32
+var TILE_SIZE = 64
 var NUM_ROOMS = 50
 var MIN_SIZE = 8
-var MAX_SIZE = 32
+var MAX_SIZE = 16
 var HSPREAD = 400
 var CULL = 0.5
 
@@ -148,7 +148,7 @@ func makeMap(room_positions, room_sizes):
 	var bottomright = Map.world_to_map(full_rect.end + Vector2(1, 1))
 	for x in range(topleft.x, bottomright.x):
 		for y in range(topleft.y, bottomright.y):
-			Map.set_cell(x, y, 1)
+			Map.set_cell(x, y, getRandomWallTileId())
 
 	var corridors = []
 	for i in range(len(room_positions)):
@@ -157,7 +157,7 @@ func makeMap(room_positions, room_sizes):
 		var room_top_left = (room_positions[i] / TILE_SIZE).floor() - (room_size_in_tiles / 2).floor()
 		for x in range(1, room_size_in_tiles.x - 1):
 			for y in range(1, room_size_in_tiles.y - 1):
-				Map.set_cell(room_top_left.x + x, room_top_left.y + y, 0)
+				Map.set_cell(room_top_left.x + x, room_top_left.y + y, getRandomFloorTileId())
 		
 		var room_point = path.get_closest_point(
 			Vector3(
@@ -194,14 +194,14 @@ func carvePath(start, end):
 	var y_step = 1 if start.y < end.y else -1
 
 	for x in range(start.x, end.x, x_step):
-		Map.set_cell(x, start.y, 0)
-		Map.set_cell(x, start.y + y_step, 0)
-		Map.set_cell(x, start.y + 2*y_step, 0)
+		Map.set_cell(x, start.y, getRandomFloorTileId())
+		Map.set_cell(x, start.y + y_step, getRandomFloorTileId())
+		Map.set_cell(x, start.y + 2*y_step, getRandomFloorTileId())
 
 	for y in range(start.y, end.y+1, y_step):
-		Map.set_cell(end.x, y, 0)
-		Map.set_cell(end.x + x_step, y, 0)
-		Map.set_cell(end.x + 2*x_step, y, 0)
+		Map.set_cell(end.x, y, getRandomFloorTileId())
+		Map.set_cell(end.x + x_step, y, getRandomFloorTileId())
+		Map.set_cell(end.x + 2*x_step, y, getRandomFloorTileId())
 
 func getStartPosition(room_positions):
 	var left_most_room = null
@@ -210,3 +210,9 @@ func getStartPosition(room_positions):
 			left_most_room = room
 	
 	return left_most_room
+
+func getRandomFloorTileId():
+	return randi() % 2
+
+func getRandomWallTileId():
+	return randi() % 2 + 2
