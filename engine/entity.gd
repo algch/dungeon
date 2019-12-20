@@ -24,6 +24,13 @@ var is_attacking = false
 
 var health = 1
 
+func getDistanceToPlayer():
+	var player = get_node('../player')
+	if player:
+		return (player.position - position).length()
+
+	return -1
+
 func takeDamage(damage, body):
 	if hitstun == 0:
 		health -= damage

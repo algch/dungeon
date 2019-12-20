@@ -60,6 +60,7 @@ func makeRooms():
 	print('execution resumed after 2 secods')
 
 	makeMap(room_positions, room_sizes)
+	spawnEnemies(room_positions)
 
 func findMST(positions):
 	var nodes = []
@@ -122,7 +123,6 @@ func _input(event):
 		makeRooms()
 
 	if event.is_action_pressed('ui_cancel'):
-		spawnEnemies()
 		var player = player_class.instance()
 		add_child(player)
 		player.position = start_position
@@ -217,15 +217,12 @@ func getRandomFloorTileId():
 func getRandomWallTileId():
 	return randi() % 2 + 2
 
-func spawnEnemies():
-	print('spawning enemies')
-	for room in $rooms.get_children():
-		print(room.position)
-		if randf() > 0.5 and room.position != start_position:
+func spawnEnemies(room_positions):
+	for room_pos in room_positions:
+		if randf() > 0.5 and room_pos != start_position:
 			var incubator = incubator_class.instance()
-			incubator.position = room.position
-			print('incubator added in room with position', room.position)
 			add_child(incubator)
+			incubator.position = room_pos
 
 
 

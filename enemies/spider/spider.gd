@@ -27,8 +27,8 @@ func chasePlayer():
 
 func wander_loop():
 	var player = get_node('../player')
-	var dist = (player.position - position).length()
-	if dist < 150:
+	var dist = getDistanceToPlayer()
+	if dist != -1 and dist < 150:
 		chasePlayer()
 	else:
 		movementLoop()

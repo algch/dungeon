@@ -37,9 +37,8 @@ func escapeFromPlayer():
 
 func wander_loop():
 	$sprite.set_texture(incubator_texture)
-	var player = get_node('../player')
-	var dist = (player.position - position).length()
-	if dist < 200:
+	var dist = getDistanceToPlayer()
+	if dist != -1 and dist < 200:
 		escapeFromPlayer()
 	else:
 		movementLoop()
