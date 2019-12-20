@@ -1,6 +1,7 @@
 extends Node2D
 
 var player_class = preload('res://player/player.tscn')
+var incubator_class = preload('res://enemies/incubator/incubator.tscn')
 var room_class = preload('res://rooms/room.tscn')
 
 var TILE_SIZE = 64
@@ -58,7 +59,6 @@ func makeRooms():
 	yield(get_tree().create_timer(2), 'timeout')
 	print('execution resumed after 2 secods')
 
-	# fix this
 	makeMap(room_positions, room_sizes)
 
 func findMST(positions):
@@ -122,9 +122,9 @@ func _input(event):
 		makeRooms()
 
 	if event.is_action_pressed('ui_cancel'):
+		spawnEnemies()
 		var player = player_class.instance()
 		add_child(player)
-		# FIX THIS, SOMETHIG IS WRONG WITH PLAYER'S POSITION
 		player.position = start_position
 		var camera = player.get_node('camera')
 		camera.make_current()
@@ -216,3 +216,16 @@ func getRandomFloorTileId():
 
 func getRandomWallTileId():
 	return randi() % 2 + 2
+
+func spawnEnemies():
+	print('spawning enemies')
+	for room in $rooms.get_children():
+		print(room.position)
+		if randf() > 0.5 and room.position != start_position:
+			var incubator = incubator_class.instance()
+			incubator.position = room.position
+			print('incubator added in room with position', room.position)
+			add_child(incubator)
+
+
+
