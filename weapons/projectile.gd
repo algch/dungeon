@@ -28,12 +28,20 @@ func movementLoop(delta):
 	var motion = move_dir.normalized() * SPEED
 	var collision = move_and_collide(motion)
 	if collision:
-		if collision.collider.get('TYPE') == 'WEAPON':
+		var collider = collision.collider
+		if collider.get('TYPE') == 'WEAPON':
 			collision.collider.queue_free()
 			explode()
 		else:
 			move_dir = move_dir.bounce(collision.normal)
 			bounces -= 1
+			# TODO add a TYPE variable to TileMap
+			if collider is TileMap:
+				# TODO what does it mean to subtract the normal to the tile pos? :p
+				var tile_pos = collider.world_to_map(position) - collision.normal
+				var tile = collision.collider.get_cellv(tile_pos)
+				if tile > 0:
+					collider.set_cellv(tile_pos, 0)
 
 func _physics_process(delta):
 	movementLoop(delta)

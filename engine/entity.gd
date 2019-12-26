@@ -7,6 +7,8 @@ onready var projectile_class = preload('res://weapons/projectile.tscn')
 # TESTING
 onready var explosion_class = preload('res://weapons/explosion.tscn')
 
+signal player_damaged
+
 var SPEED = 0
 var movement_dir = Vector2(0, 0)
 
@@ -31,11 +33,19 @@ func getDistanceToPlayer():
 
 	return -1
 
+func setDamagedTexture():
+	pass
+
 func takeDamage(damage, body):
 	if hitstun == 0:
 		health -= damage
 		hitstun = HITSTUN_TIME
 		knock_dir = transform.origin - body.transform.origin
+		# TODO make this better
+		if TYPE == 'PLAYER':
+			emit_signal('player_damaged')
+		elif TYPE == 'ENEMY':
+			setDamagedTexture()
 
 func spriteDirLoop():
 	match movement_dir:

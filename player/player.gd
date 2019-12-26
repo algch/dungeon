@@ -3,6 +3,7 @@ extends "res://engine/entity.gd"
 onready var on_wall_texture = preload("res://player/on_wall.png")
 onready var normal_texture = preload("res://player/player.png")
 var DAMAGE = 3
+var MAX_HEALTH = 5
 
 func healthLoop():
 	if health <= 0:
@@ -27,7 +28,11 @@ func _ready():
 	SPEED = 200
 	TYPE = 'PLAYER'
 	$animation.stop()
-	health = 5
+	health = MAX_HEALTH
+	get_node('gui').updateUi()
+
+func _draw():
+	draw_line(Vector2(0,0), get_global_mouse_position()-position, Color('#ff0000'), true)
 
 func _physics_process(delta):
 	controlsLoop()
@@ -37,3 +42,4 @@ func _physics_process(delta):
 	animationLoop()
 	attackLoop()
 	healthLoop()
+	update()

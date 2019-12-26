@@ -14,6 +14,7 @@ var CULL = 0.5
 
 var path
 var start_position
+var world_rect = null
 
 func makeRooms():
     path = null
@@ -28,6 +29,7 @@ func makeRooms():
 
     yield(get_tree().create_timer(1), 'timeout')
 
+    # TODO move this variable to the class scope
     var room_positions = []
     var room_sizes = []
     # CULL rooms
@@ -92,6 +94,7 @@ func findMST(positions):
 
     return mst
 
+# TODO refator this
 func makeMap(room_positions, room_sizes):
     if len(room_positions) != len(room_sizes):
         print("ERROR room_positions) != len(room_sizes")
@@ -106,6 +109,7 @@ func makeMap(room_positions, room_sizes):
             room_sizes[i]
         )
         full_rect = full_rect.merge(r)
+    world_rect = full_rect
     var topleft = Map.world_to_map(full_rect.position)
     var bottomright = Map.world_to_map(full_rect.end + Vector2(1, 1))
     for x in range(topleft.x, bottomright.x):
@@ -148,7 +152,6 @@ func makeMap(room_positions, room_sizes):
         corridors.append(room_point)
 
     start_position = getStartPosition(room_positions)
-    print('start_positon [rg map]', start_position)
 
 func carvePath(start, end):
     var Map = $tilemap
