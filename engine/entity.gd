@@ -33,6 +33,9 @@ func getDistanceToPlayer():
 
 	return -1
 
+func setDamagedTexture():
+	pass
+
 func takeDamage(damage, body):
 	if hitstun == 0:
 		health -= damage
@@ -41,6 +44,8 @@ func takeDamage(damage, body):
 		# TODO make this better
 		if TYPE == 'PLAYER':
 			emit_signal('player_damaged')
+		elif TYPE == 'ENEMY':
+			setDamagedTexture()
 
 func spriteDirLoop():
 	match movement_dir:

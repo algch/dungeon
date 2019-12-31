@@ -2,14 +2,30 @@ extends "res://engine/entity.gd"
 
 const MOVEMENT_TIME = 50
 var movementtimer = 0
+var damaged_texture = preload('res://enemies/spider/animations/spider_damaged.png')
+var normal_texture = preload('res://enemies/spider/animations/spider.png')
 
 var DAMAGE = 1
+
+var texture_timer = null
 
 func _ready():
 	SPEED = 150
 	TYPE = 'ENEMY'
 	health = 3
 
+func setNormalTexture():
+	$sprite.set_texture(normal_texture)
+	remove_child(texture_timer)
+	texture_timer = null
+
+func setDamagedTexture():
+	$sprite.set_texture(damaged_texture)
+	texture_timer = Timer.new()
+	texture_timer.connect('timeout', self, 'setNormalTexture')
+	texture_timer.set_wait_time(0.5)
+	add_child(texture_timer)
+	texture_timer.start()
 
 func healthLoop():
 	if health <= 0:
