@@ -29,6 +29,7 @@ func _ready():
 	TYPE = 'PLAYER'
 	$animation.stop()
 	health = MAX_HEALTH
+	get_node('gui').updateUi()
 
 func _physics_process(delta):
 	controlsLoop()

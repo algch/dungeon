@@ -40,7 +40,6 @@ func takeDamage(damage, body):
 		knock_dir = transform.origin - body.transform.origin
 		# TODO make this better
 		if TYPE == 'PLAYER':
-			print('player_damaged')
 			emit_signal('player_damaged')
 
 func spriteDirLoop():

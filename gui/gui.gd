@@ -3,15 +3,11 @@ extends CanvasLayer
 onready var hpBar = get_node('container/bars/bar/gauge')
 onready var hpLabel = get_node('container/bars/bar/count/background/number')
 
-func _ready():
-	connect('player_damaged', self, 'updateUi')
-
 func updateUi():
-	print('updating ui')
-	var player = get_node('../player')
-	var percentage = floor(player.health / player.MAX_HEALTH * 100)
-	setHp(percentage, player.health)
+	var player = get_parent()
+	var percentage = floor(float(player.health) / player.MAX_HEALTH * 100)
+	setHp(percentage, player.health, player.MAX_HEALTH)
 
-func setHp(percentage, health):
+func setHp(percentage, health, max_health):
 	hpBar.set_value(percentage)
-	hpLabel.set_text(str(health))
+	hpLabel.set_text(str(health) + '/' + str(max_health))
