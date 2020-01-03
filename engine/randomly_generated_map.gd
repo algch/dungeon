@@ -14,6 +14,7 @@ var CULL = 0.5
 
 var path
 var start_position
+var world_rect = null
 
 func makeRooms():
     path = null
@@ -106,6 +107,7 @@ func makeMap(room_positions, room_sizes):
             room_sizes[i]
         )
         full_rect = full_rect.merge(r)
+    world_rect = full_rect
     var topleft = Map.world_to_map(full_rect.position)
     var bottomright = Map.world_to_map(full_rect.end + Vector2(1, 1))
     for x in range(topleft.x, bottomright.x):
@@ -148,7 +150,6 @@ func makeMap(room_positions, room_sizes):
         corridors.append(room_point)
 
     start_position = getStartPosition(room_positions)
-    print('start_positon [rg map]', start_position)
 
 func carvePath(start, end):
     var Map = $tilemap

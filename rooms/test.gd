@@ -10,7 +10,6 @@ func _ready():
 func instancePlayer():
 	var player = player_class.instance()
 	add_child(player)
-	print('start_position [test]', start_position)
 	player.position = start_position
 	var camera = player.get_node('camera')
 	camera.make_current()
