@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://gui/gui.gd" type="Script" id=1]
 [ext_resource path="res://gui/label_HP_bg.png" type="Texture" id=2]
@@ -6,6 +6,7 @@
 [ext_resource path="res://gui/Comfortaa-Bold.ttf" type="DynamicFontData" id=4]
 [ext_resource path="res://gui/lifebar_bg.png" type="Texture" id=5]
 [ext_resource path="res://gui/lifebar_fill.png" type="Texture" id=6]
+[ext_resource path="res://gui/minimap.gd" type="Script" id=7]
 
 [sub_resource type="DynamicFont" id=1]
 size = 28
@@ -61,7 +62,6 @@ value = 100.0
 texture_under = ExtResource( 5 )
 texture_progress = ExtResource( 6 )
 
-[node name="counters" type="HBoxContainer" parent="container"]
-margin_left = 504.0
-margin_right = 504.0
-margin_bottom = 53.0
+[node name="minimap" type="Position2D" parent="."]
+position = Vector2( 1026.99, 775.253 )
+script = ExtResource( 7 )
