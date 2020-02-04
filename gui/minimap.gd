@@ -4,8 +4,14 @@ onready var player = get_node('../..')
 onready var world_rect = get_node('../../..').world_rect
 
 
-onready var screen_size = get_viewport().size
+# WTF something is wrong with the screen size
+onready var screen_size = get_viewport().get_visible_rect().size
 onready var minimap_size = screen_size - position
+
+func _ready():
+	print(screen_size)
+	print(position)
+	print(minimap_size)
 
 func _process(delta):
 	update()

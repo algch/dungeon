@@ -63,5 +63,5 @@ texture_under = ExtResource( 5 )
 texture_progress = ExtResource( 6 )
 
 [node name="minimap" type="Position2D" parent="."]
-position = Vector2( 1026.99, 775.253 )
+position = Vector2( 1000, 750 )
 script = ExtResource( 7 )
