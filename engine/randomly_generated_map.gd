@@ -29,6 +29,7 @@ func makeRooms():
 
     yield(get_tree().create_timer(1), 'timeout')
 
+    # TODO move this variable to the class scope
     var room_positions = []
     var room_sizes = []
     # CULL rooms
@@ -93,6 +94,7 @@ func findMST(positions):
 
     return mst
 
+# TODO refator this
 func makeMap(room_positions, room_sizes):
     if len(room_positions) != len(room_sizes):
         print("ERROR room_positions) != len(room_sizes")

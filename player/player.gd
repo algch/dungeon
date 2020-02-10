@@ -31,6 +31,9 @@ func _ready():
 	health = MAX_HEALTH
 	get_node('gui').updateUi()
 
+func _draw():
+	draw_line(Vector2(0,0), get_global_mouse_position()-position, Color('#ff0000'), true)
+
 func _physics_process(delta):
 	controlsLoop()
 	movementLoop()
@@ -39,3 +42,4 @@ func _physics_process(delta):
 	animationLoop()
 	attackLoop()
 	healthLoop()
+	update()
