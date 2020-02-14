@@ -65,3 +65,12 @@ texture_progress = ExtResource( 6 )
 [node name="minimap" type="Position2D" parent="."]
 position = Vector2( 1000, 750 )
 script = ExtResource( 7 )
+
+[node name="enemies" type="Label" parent="."]
+anchor_left = 0.883
+anchor_right = 0.883
+margin_left = 0.454346
+margin_top = 7.12408
+margin_right = 40.4543
+margin_bottom = 21.1241
+text = "0"

@@ -1,4 +1,4 @@
-extends "res://engine/entity.gd"
+extends "res://enemies/enemy.gd"
 
 const MOVEMENT_TIME = 50
 var movementtimer = 0
@@ -30,6 +30,8 @@ func setDamagedTexture():
 func healthLoop():
 	if health <= 0:
 		globals.spider_count -= 1
+		var player = get_node('../player')
+		player.get_node('gui').updateUi()
 		queue_free()
 
 func chasePlayer():
@@ -55,6 +57,9 @@ func wander_loop():
 		movementtimer = MOVEMENT_TIME
 
 func _physics_process(delta):
+	if not IS_ACTIVE:
+		return
+
 	damageLoop(['WEAPON', 'PLAYER'])
 	healthLoop()
 	wander_loop()

@@ -1,4 +1,4 @@
-extends "res://engine/entity.gd"
+extends "res://enemies/enemy.gd"
 
 var spider_class = load("res://enemies/spider/spider.tscn")
 var nest_texture = preload("res://enemies/incubator/animations/nest.png")
@@ -23,7 +23,6 @@ func _ready():
 
 func healthLoop():
 	if health <= 0:
-		globals.spider_count -= 1
 		queue_free()
 
 func escapeFromPlayer():
@@ -61,9 +60,14 @@ func spawn_loop():
 			spawntimer = SPAWN_TIME
 
 			globals.spider_count += 1
+			var player = get_node('../player')
+			player.get_node('gui').updateUi()
 			should_wander = true
 
 func _physics_process(delta):
+	if not IS_ACTIVE:
+		return
+
 	damageLoop(['WEAPON', 'PLAYER'])
 	healthLoop()
 	if should_wander or hitstun > 0:

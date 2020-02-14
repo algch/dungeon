@@ -41,7 +41,7 @@ func takeDamage(damage, body):
 		health -= damage
 		hitstun = HITSTUN_TIME
 		knock_dir = transform.origin - body.transform.origin
-		# TODO make this better
+		# TODO make this betters
 		if TYPE == 'PLAYER':
 			emit_signal('player_damaged')
 		elif TYPE == 'ENEMY':

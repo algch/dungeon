@@ -41,7 +41,8 @@ func movementLoop(delta):
 				var tile_pos = collider.world_to_map(position) - collision.normal
 				var tile = collision.collider.get_cellv(tile_pos)
 				if tile > 0:
-					collider.set_cellv(tile_pos, 0)
+					print('Tile at pos ' + str(tile_pos) + 'should be removed')
+					# collider.set_cellv(tile_pos, 0)
 
 func _physics_process(delta):
 	movementLoop(delta)
