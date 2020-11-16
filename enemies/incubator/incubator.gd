@@ -64,7 +64,6 @@ func spawn_loop():
 			should_wander = true
 
 func _physics_process(delta):
-	damageLoop(['WEAPON', 'PLAYER'])
 	healthLoop()
 	if should_wander or hitstun > 0:
 		wander_loop()

@@ -6,9 +6,9 @@ var incubator_class = preload('res://enemies/incubator/incubator.tscn')
 var room_class = preload('res://rooms/room.tscn')
 
 var TILE_SIZE = 64
-var NUM_ROOMS = 50
-var MIN_SIZE = 8
-var MAX_SIZE = 16
+var NUM_ROOMS = 20
+var MIN_SIZE = 4
+var MAX_SIZE = 8
 var HSPREAD = 400
 var CULL = 0.5
 
@@ -94,7 +94,7 @@ func findMST(positions):
 
     return mst
 
-# TODO refator this
+# TODO refactor this
 func makeMap(room_positions, room_sizes):
     if len(room_positions) != len(room_sizes):
         print("ERROR room_positions) != len(room_sizes")

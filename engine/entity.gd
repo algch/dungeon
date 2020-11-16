@@ -10,6 +10,7 @@ onready var explosion_class = preload('res://weapons/explosion.tscn')
 signal player_damaged
 
 var SPEED = 0
+var KNOCK_SPEED = 0
 var movement_dir = Vector2(0, 0)
 
 var hitstun = 0
@@ -59,42 +60,5 @@ func spriteDirLoop():
 			sprite_dir = 'down'
 
 func movementLoop():
-	var motion
-	if hitstun == 0:
-		motion = movement_dir.normalized() * SPEED
-	else:
-		motion = knock_dir.normalized() * SPEED * 1.5
+	var motion = movement_dir.normalized() * SPEED
 	move_and_slide(motion)
-
-func damageLoop(damage_types):
-	if hitstun > 0:
-		hitstun -= 1
-	for area in $hitbox.get_overlapping_areas():
-		var body = area.get_parent()
-		if body.get('TYPE') in damage_types:
-			var damage = body.get('DAMAGE') or 0
-			takeDamage(body.get('DAMAGE'), body)
-
-func controlsLoop():
-	var RIGHT = int(Input.is_action_pressed('ui_right'))
-	var LEFT = int(Input.is_action_pressed('ui_left'))
-	var DOWN = int(Input.is_action_pressed('ui_down'))
-	var UP = int(Input.is_action_pressed('ui_up'))
-
-	movement_dir.x = -LEFT + RIGHT
-	movement_dir.y = -UP + DOWN
-
-	is_attacking = Input.is_action_just_released('attack')
-
-
-func attackLoop():
-	if reload > 0:
-		reload -= 1
-	elif is_attacking and hitstun == 0:
-		# create projectile outside of the player
-		var start_pos = (get_global_mouse_position() - position).normalized() * 54
-		var projectile = projectile_class.instance()
-		projectile.position = position + start_pos
-		get_parent().add_child(projectile)
-		is_attacking = false
-		reload = RELOAD_TIME

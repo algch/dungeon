@@ -1,6 +1,7 @@
 extends 'res://engine/randomly_generated_map.gd'
 
 var player_class = preload('res://player/player.tscn')
+var spawner_class = preload('res://engine/Spawner/Spawner.tscn')
 
 func _ready():
 	randomize()
@@ -8,8 +9,10 @@ func _ready():
 	makeRooms()
 
 func instancePlayer():
+	var spawner = spawner_class.instance()
+	spawner.position = start_position
+	add_child(spawner)
+
 	var player = player_class.instance()
-	add_child(player)
 	player.position = start_position
-	var camera = player.get_node('camera')
-	camera.make_current()
+	add_child(player)
