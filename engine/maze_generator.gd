@@ -1,9 +1,12 @@
 extends Node2D
 
+const TILE_SIZE = 64
+
 class Cell:
 	var x
 	var y
-	var size = 100
+	var square_tiles = 4
+	var size = square_tiles * TILE_SIZE
 	var visited = false
 
 	var up_wall = true
@@ -21,6 +24,12 @@ class Cell:
 			Vector2(self.size, self.size)
 		)
 
+	func get_top_left_xy():
+		return Vector2(self.x * square_tiles, self.y * square_tiles)
+
+	func get_bottom_right_xy():
+		return Vector2((self.x+1) * square_tiles, (self.y+1)*square_tiles)
+
 var cells = []
 var rows = 10
 var cols = 10
@@ -30,6 +39,7 @@ func _ready():
 	populate_cells()
 	var current_cell = cells[0]
 	carve_maze(current_cell)
+	fill_tilemap()
 
 func populate_cells():
 	for i in range(rows):
@@ -102,24 +112,12 @@ func remove_wall(current, neighbor):
 		current.up_wall = false
 		neighbor.down_wall = false
 
-func _draw():
-	for cell in cells:
-		if cell.up_wall:
-			draw_line(Vector2(cell.x*cell.size, cell.y*cell.size), Vector2((cell.x+1)*cell.size, cell.y*cell.size), Color(1, 1, 1), 2)
-		if cell.right_wall:
-			draw_line(Vector2((cell.x+1)*cell.size, cell.y*cell.size), Vector2((cell.x+1)*cell.size, (cell.y+1)*cell.size), Color(1, 1, 1), 2)
-		if cell.down_wall:
-			draw_line(Vector2((cell.x+1)*cell.size, (cell.y+1)*cell.size), Vector2(cell.x*cell.size, (cell.y+1)*cell.size), Color(1, 1, 1), 2)
-		if cell.left_wall:
-			draw_line(Vector2(cell.x*cell.size, (cell.y+1)*cell.size), Vector2(cell.x*cell.size, cell.y*cell.size), Color(1, 1, 1), 2)
-
-func _process(delta):
-	update()
 
 func _unhandled_input(event):
 	if event.is_action_released("refresh"):
 		reset_cells()
 		carve_maze(cells[0])
+		fill_tilemap()
 
 func reset_cells():
 	for cell in cells:
@@ -128,3 +126,25 @@ func reset_cells():
 		cell.up_wall = true
 		cell.down_wall = true
 		cell.visited = false
+
+func fill_tilemap():
+	for cell in cells:
+		var tl = cell.get_top_left_xy()
+		var br = cell.get_bottom_right_xy()
+		var local_x = 0
+		var local_y = 0
+		for x in range(tl.x, br.x):
+			local_y = 0
+			for y in range(tl.y, br.y):
+				var tile_id = 0
+				if cell.up_wall and local_y == 0:
+					tile_id = 2
+				if cell.down_wall and local_y == cell.square_tiles-1:
+					tile_id = 2
+				if cell.right_wall and local_x == cell.square_tiles-1:
+					tile_id = 2
+				if cell.left_wall and local_x == 0:
+					tile_id = 2
+				$TileMap.set_cell(x, y, tile_id)
+				local_y += 1
+			local_x += 1

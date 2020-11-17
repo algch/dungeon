@@ -33,7 +33,8 @@ func animationLoop():
 		facing = "right"
 
 	if movement_dir:
-		$animation.play("walk_" + facing)
+		if facing:
+			$animation.play("walk_" + facing)
 	else:
 		$animation.set_frame(0)
 		$animation.stop()
