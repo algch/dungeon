@@ -3,7 +3,7 @@ extends Node2D
 class Cell:
 	var x
 	var y
-	var size = 40
+	var size = 100
 	var visited = false
 
 	var up_wall = true
@@ -36,16 +36,29 @@ func populate_cells():
 		for j in range(cols):
 			cells.append(Cell.new(j, i))
 
-func carve_maze(current_cell):
-	current_cell.visited = true
-	var neighbors = get_neighbors(current_cell)
-	while neighbors:
-		var elem_index = randi() % len(neighbors)
-		var rand_neighbor = neighbors[elem_index]
-		neighbors.remove(elem_index)
-		if not rand_neighbor.visited:
+func carve_maze(initial_cell):
+	var stack = []
+	initial_cell.visited = true
+	stack.append(initial_cell)
+	while stack:
+		var current_cell = stack.pop_back()
+		var neighbors = get_unvisited_neighbors(current_cell)
+		if neighbors:
+			stack.append(current_cell)
+			var rand_neighbor = neighbors[randi() % len(neighbors)]
 			remove_wall(current_cell, rand_neighbor)
-			carve_maze(rand_neighbor)
+			rand_neighbor.visited = true
+			stack.append(rand_neighbor)
+
+func get_unvisited_neighbors(cell):
+	var neighbors = get_neighbors(cell)
+	var unvisited_neighbors = []
+
+	for neighbor in neighbors:
+		if not neighbor.visited:
+			unvisited_neighbors.append(neighbor)
+
+	return unvisited_neighbors
 
 func get_neighbors(cell):
 	var neighbors = []
@@ -66,6 +79,12 @@ func get_neighbors(cell):
 
 	return neighbors
 
+func _get_cell_index(x, y):
+	if x < 0 or x > cols-1 or y < 0 or y > rows-1:
+		return null
+
+	return x + y * cols
+
 func remove_wall(current, neighbor):
 	var x_delta = neighbor.x - current.x
 	if x_delta == 1:
@@ -82,12 +101,6 @@ func remove_wall(current, neighbor):
 	elif y_delta == -1:
 		current.up_wall = false
 		neighbor.down_wall = false
-
-func _get_cell_index(x, y):
-	if x < 0 or x > cols-1 or y < 0 or y > rows-1:
-		return null
-
-	return x + y * cols
 
 func _draw():
 	for cell in cells:

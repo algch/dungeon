@@ -1,4 +1,4 @@
-[gd_scene load_steps=51 format=2]
+[gd_scene load_steps=50 format=2]
 
 [ext_resource path="res://player/player.gd" type="Script" id=1]
 [ext_resource path="res://player/on_wall.png" type="Texture" id=2]
@@ -46,7 +46,6 @@
 [ext_resource path="res://player/animations/walk_right/Kausagi_Right0009.png" type="Texture" id=44]
 [ext_resource path="res://player/animations/walk_right/Kausagi_Right0010.png" type="Texture" id=45]
 [ext_resource path="res://player/animations/walk_right/Kausagi_Right0011.png" type="Texture" id=46]
-[ext_resource path="res://gui/gui.tscn" type="PackedScene" id=47]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
@@ -105,6 +104,3 @@ drag_margin_left = 0.0
 drag_margin_top = 0.0
 drag_margin_right = 0.0
 drag_margin_bottom = 0.0
-
-[node name="gui" parent="." instance=ExtResource( 47 )]
-[connection signal="player_damaged" from="." to="gui" method="updateUi"]

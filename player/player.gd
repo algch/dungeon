@@ -44,7 +44,6 @@ func gameOver():
 func _ready():
 	randomize()
 	health = MAX_HEALTH
-	get_node('gui').updateUi()
 	$camera.make_current()
 
 func _draw():

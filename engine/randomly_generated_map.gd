@@ -57,7 +57,7 @@ func makeRooms():
         room.queue_free()
 
     makeMap(room_positions, room_sizes)
-    spawnEnemies(room_positions)
+    # spawnEnemies(room_positions)
     emit_signal('map_was_generated')
 
 func findMST(positions):
